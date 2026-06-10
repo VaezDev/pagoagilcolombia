@@ -4,28 +4,107 @@
   --font-sans: var(--font-dm-sans);
   --font-sora: var(--font-sora);
 
-  --color-navy: #0D1B3E;
-  --color-navy-mid: #152652;
-  --color-blue: #1A47A8;
-  --color-blue-500: #2563EB;
-  --color-gold: #F5A623;
+  /* Brand */
+  --color-navy:       #0A1628;
+  --color-navy-mid:   #0F2040;
+  --color-navy-deep:  #060E1A;
+  --color-blue:       #1A47A8;
+  --color-blue-500:   #2563EB;
+  --color-blue-400:   #3B82F6;
+  --color-gold:       #F5A623;
   --color-gold-light: #FFCA55;
-  --color-gray-soft: #F4F6FB;
-  --color-gray-text: #6B7A99;
+  --color-gold-dim:   #C47F0E;
+  --color-white:      #FFFFFF;
+  --color-gray-soft:  #F4F6FB;
+  --color-gray-text:  #6B7A99;
+
+  /* Spacing scale */
+  --spacing-section: 100px;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
+/* ── Base reset ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
   background: #ffffff;
-  color: #0D1B3E;
+  color: #0A1628;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Grain texture overlay for premium feel ── */
+.grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Mesh gradient backgrounds ── */
+.mesh-bg {
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 20%, rgba(37,99,235,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 80%, rgba(245,166,35,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(26,71,168,0.10) 0%, transparent 60%),
+    #0A1628;
+}
+
+/* ── Glass card ── */
+.glass {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ── Gold gradient text ── */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #F5A623 0%, #FFCA55 50%, #F5A623 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── Blue gradient text ── */
+.text-gradient-blue {
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 50%, #60A5FA 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── Animated dot grid ── */
+.dot-grid {
+  background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* ── Section padding ── */
+.section-padding { padding: 100px 5%; }
+
+/* ── Scrollbar subtle ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(37,99,235,0.3); border-radius: 99px; }
+
+/* ── Selection ── */
+::selection { background: rgba(245,166,35,0.25); color: #0A1628; }
+
+/* ── Focus visible ring ── */
+:focus-visible {
+  outline: 2px solid #F5A623;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

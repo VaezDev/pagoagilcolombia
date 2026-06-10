@@ -3,141 +3,167 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { WHATSAPP_URL } from "@/lib/constants";
+import { MessageCircle, Mail, Phone, MapPin, ArrowRight, CheckCircle } from "lucide-react";
+
+const spring = { type: "spring", stiffness: 80, damping: 20 } as const;
 
 const contactLinks = [
-  { icon: "💬", label: "WhatsApp", href: WHATSAPP_URL, external: true },
-  { icon: "✉️", label: "info@pagoagil.com.co", href: "mailto:info@pagoagil.com.co", external: false },
-  { icon: "📞", label: "+57 324 607 9259", href: "tel:+573246079259", external: false },
-  { icon: "📍", label: "Cali, Valle del Cauca", href: "#", external: false },
+  { icon: MessageCircle, label: "WhatsApp", sub: "+57 324 607 9259", href: WHATSAPP_URL, external: true, accent: "#25D366" },
+  { icon: Mail, label: "Email", sub: "info@pagoagil.com.co", href: "mailto:info@pagoagil.com.co", external: false, accent: "#3B82F6" },
+  { icon: Phone, label: "Teléfono", sub: "+57 324 607 9259", href: "tel:+573246079259", external: false, accent: "#F5A623" },
+  { icon: MapPin, label: "Sede", sub: "Cali, Valle del Cauca", href: "#", external: false, accent: "#10B981" },
 ];
 
 export default function Contact() {
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSent(true);
-    setTimeout(() => setSent(false), 3500);
+    setLoading(true);
+    setTimeout(() => { setLoading(false); setSent(true); }, 1200);
+    setTimeout(() => setSent(false), 4500);
   }
 
   return (
-    <section id="contacto" className="py-20 px-[5%] bg-white">
-      <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <section id="contacto" className="relative py-24 px-[5%] bg-white overflow-hidden">
+      {/* Subtle gradient */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse 60% 50% at 100% 100%, rgba(37,99,235,0.04) 0%, transparent 60%)" }} />
+
+      <div className="relative z-10 max-w-5xl mx-auto grid lg:grid-cols-[1fr_1.4fr] gap-14 items-start">
         {/* Left */}
         <motion.div
           initial={{ opacity: 0, x: -32 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6 }}
+          transition={spring}
         >
-          <h2 className="text-[clamp(1.5rem,3vw,2.2rem)] font-extrabold text-navy leading-snug mb-4">
-            ¿Tienes alguna
-            <br />
-            <em className="not-italic text-blue-500">pregunta?</em>
+          <span className="inline-block font-sora text-[11px] font-bold text-blue-500 uppercase tracking-[0.18em] mb-4 px-3 py-1 bg-blue-500/[0.08] rounded-full">
+            Contacto
+          </span>
+          <h2 className="font-sora font-extrabold text-navy leading-[1.1] mt-3 mb-4"
+            style={{ fontSize: "clamp(2rem, 3.5vw, 3rem)" }}>
+            ¿Tienes alguna{" "}
+            <span className="text-gradient-blue">pregunta?</span>
           </h2>
-          <p className="text-gray-text leading-[1.7] mb-7 text-[15px]">
-            Estamos disponibles para ayudarte. Escríbenos por WhatsApp o llena
-            el formulario y te respondemos pronto.
+          <p className="text-gray-text leading-relaxed mb-10 text-base max-w-sm">
+            Estamos disponibles para ayudarte. Escríbenos por WhatsApp o llena el formulario.
           </p>
 
-          <div className="flex flex-col gap-3.5">
-            {contactLinks.map((l) => (
-              <motion.a
-                key={l.label}
-                href={l.href}
-                target={l.external ? "_blank" : undefined}
-                rel={l.external ? "noreferrer" : undefined}
-                whileHover={{ x: 4, color: "#2563EB" }}
-                className="flex items-center gap-3.5 text-navy text-[15px] font-medium no-underline transition-colors duration-200"
-              >
-                <motion.div
-                  whileHover={{ backgroundColor: "rgba(37,99,235,0.08)" }}
-                  className="w-11 h-11 bg-gray-soft rounded-xl flex items-center justify-center text-xl transition-colors duration-200"
+          <div className="flex flex-col gap-3">
+            {contactLinks.map((l, i) => {
+              const Icon = l.icon;
+              return (
+                <motion.a
+                  key={l.label}
+                  href={l.href}
+                  target={l.external ? "_blank" : undefined}
+                  rel={l.external ? "noreferrer" : undefined}
+                  initial={{ opacity: 0, x: -16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ ...spring, delay: i * 0.07 }}
+                  whileHover={{ x: 4 }}
+                  className="group flex items-center gap-4 no-underline"
                 >
-                  {l.icon}
-                </motion.div>
-                {l.label}
-              </motion.a>
-            ))}
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    transition={spring}
+                    className="w-11 h-11 rounded-2xl flex items-center justify-center flex-none transition-colors duration-200"
+                    style={{ background: `${l.accent}10`, border: `1.5px solid ${l.accent}20` }}
+                  >
+                    <Icon size={17} strokeWidth={1.8} style={{ color: l.accent }} />
+                  </motion.div>
+                  <div>
+                    <p className="text-navy font-sora font-semibold text-sm leading-none mb-0.5">{l.label}</p>
+                    <p className="text-gray-text text-xs">{l.sub}</p>
+                  </div>
+                </motion.a>
+              );
+            })}
           </div>
         </motion.div>
 
-        {/* Right form */}
+        {/* Right — form */}
         <motion.div
           initial={{ opacity: 0, x: 32 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="bg-gray-soft rounded-2xl p-8"
+          transition={{ ...spring, delay: 0.1 }}
+          className="bg-[#F8FAFF] border border-[#E8EDF8] rounded-3xl p-8"
         >
-          <h3 className="text-[18px] font-bold text-navy mb-5">
-            Envíanos un mensaje
-          </h3>
+          <h3 className="font-sora font-bold text-navy text-xl mb-6">Envíanos un mensaje</h3>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            {[
-              { label: "Nombre", type: "text", placeholder: "Tu nombre completo" },
-              { label: "Teléfono", type: "tel", placeholder: "300 000 0000" },
-            ].map((f) => (
-              <div key={f.label}>
-                <label className="block text-[13px] font-semibold text-navy/70 mb-1.5">
-                  {f.label}
-                </label>
-                <input
-                  type={f.type}
-                  placeholder={f.placeholder}
-                  className="w-full px-4 py-3 border-[1.5px] border-[#DDE3F0] rounded-lg font-sans text-sm text-navy bg-white outline-none transition-colors duration-200 focus:border-blue-500"
-                />
-              </div>
-            ))}
+            <div className="grid sm:grid-cols-2 gap-4">
+              {[
+                { label: "Nombre", type: "text", placeholder: "Tu nombre completo" },
+                { label: "Teléfono", type: "tel", placeholder: "300 000 0000" },
+              ].map((f) => (
+                <div key={f.label}>
+                  <label className="block font-sora text-xs font-semibold text-navy/60 mb-2 uppercase tracking-wide">
+                    {f.label}
+                  </label>
+                  <input
+                    type={f.type}
+                    placeholder={f.placeholder}
+                    required
+                    className="w-full px-4 py-3.5 bg-white border border-[#DDE3F0] rounded-xl text-sm text-navy placeholder-gray-text/60 outline-none transition-all duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
+                  />
+                </div>
+              ))}
+            </div>
 
             <div>
-              <label className="block text-[13px] font-semibold text-navy/70 mb-1.5">
+              <label className="block font-sora text-xs font-semibold text-navy/60 mb-2 uppercase tracking-wide">
                 Ciudad
               </label>
-              <select className="w-full px-4 py-3 border-[1.5px] border-[#DDE3F0] rounded-lg text-sm text-navy bg-white outline-none transition-colors duration-200 focus:border-blue-500 appearance-none">
+              <select
+                required
+                className="w-full px-4 py-3.5 bg-white border border-[#DDE3F0] rounded-xl text-sm text-navy outline-none transition-all duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 appearance-none cursor-pointer"
+              >
                 <option value="">Selecciona tu ciudad</option>
-                {["Cali", "Pasto", "Ipiales", "Bogotá", "Otra"].map((c) => (
-                  <option key={c}>{c}</option>
-                ))}
+                {["Cali", "Pasto", "Ipiales", "Bogotá", "Otra"].map((c) => <option key={c}>{c}</option>)}
               </select>
             </div>
 
             <div>
-              <label className="block text-[13px] font-semibold text-navy/70 mb-1.5">
+              <label className="block font-sora text-xs font-semibold text-navy/60 mb-2 uppercase tracking-wide">
                 Mensaje
               </label>
               <textarea
                 placeholder="¿En qué podemos ayudarte?"
-                rows={3}
-                className="w-full px-4 py-3 border-[1.5px] border-[#DDE3F0] rounded-lg text-sm text-navy bg-white outline-none transition-colors duration-200 focus:border-blue-500 resize-none"
+                rows={4}
+                required
+                className="w-full px-4 py-3.5 bg-white border border-[#DDE3F0] rounded-xl text-sm text-navy placeholder-gray-text/60 outline-none transition-all duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 resize-none"
               />
             </div>
 
             <motion.button
               type="submit"
-              whileHover={{ backgroundColor: "#2563EB", y: -1 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full bg-navy text-white font-sora font-bold text-[15px] py-3.5 rounded-full mt-1 border-none cursor-pointer transition-colors duration-200"
+              disabled={loading || sent}
+              whileHover={!loading && !sent ? { scale: 1.02, boxShadow: "0 8px 32px rgba(10,22,40,0.25)" } : {}}
+              whileTap={!loading && !sent ? { scale: 0.98 } : {}}
+              transition={spring}
+              className="relative w-full flex items-center justify-center gap-2.5 bg-navy text-white font-sora font-bold text-[15px] py-4 rounded-full border-none cursor-pointer overflow-hidden transition-colors duration-200 hover:bg-blue-500 disabled:cursor-not-allowed"
+              style={{ minHeight: 56 }}
             >
               <AnimatePresence mode="wait">
-                {sent ? (
-                  <motion.span
-                    key="sent"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    ✅ ¡Mensaje enviado!
+                {loading ? (
+                  <motion.span key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
+                    <motion.span animate={{ rotate: 360 }} transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }} className="block w-4 h-4 border-2 border-white/30 border-t-white rounded-full" />
+                    Enviando...
+                  </motion.span>
+                ) : sent ? (
+                  <motion.span key="sent" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2 text-white">
+                    <CheckCircle size={18} strokeWidth={2.5} />
+                    ¡Mensaje enviado!
                   </motion.span>
                 ) : (
-                  <motion.span
-                    key="idle"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    Enviar mensaje →
+                  <motion.span key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
+                    Enviar mensaje
+                    <ArrowRight size={16} strokeWidth={2.5} />
                   </motion.span>
                 )}
               </AnimatePresence>
